@@ -1,0 +1,20 @@
+#container {
+    width: 300px; 
+    max-width: 300px; 
+    min-width: 300px; 
+    min-height: 500px; 
+    border-width: 1px; 
+    border-style: solid;
+}
+#app-title {
+    text-align: center;
+}
+#round-title {
+    text-align: center;
+}
+#container hr {
+    margin: 9px 0;
+}
+#loading-div {
+    text-align: center;
+}
