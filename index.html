@@ -11,8 +11,8 @@
         <h1 id="app-title">Resistance</h1>
         <hr>
 
-        <h3 id="round-title">Round Name</h3>
-        <div id="round-instructions">
+        <h3 id="round-title" class="hide">Round Name</h3>
+        <div id="round-instructions" class="hide">
             Instructions for the round go here. These could potentially grow to be pretty long, so let's put some long sample text in here.
         </div>
         <hr>
@@ -26,10 +26,20 @@
         </div>
     </div>
 
+    <div id="dev-tools">
+        <h3>Dev Tools</h3>
+        <a href="#" id="open-another-client" class="btn">
+            Open Another Client
+        </a>
+    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="js/Resistance.js"></script>
     <script src="js/Display.js"></script>
+    <script src="js/Communicator.js"></script>
+    <script src="js/Player.js"></script>
+    <script src="js/namegen/NameGenerator.js"></script>
     <script src="js/rounds/StartRound.js"></script>
   </body>
 </html>

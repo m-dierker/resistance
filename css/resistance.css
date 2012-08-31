@@ -5,6 +5,12 @@
     min-height: 500px; 
     border-width: 1px; 
     border-style: solid;
+    padding: 3px;
+    float:left;
+}
+#dev-tools {
+    margin-left: 200px;
+    float:left;
 }
 #app-title {
     text-align: center;
@@ -16,5 +22,8 @@
     margin: 9px 0;
 }
 #loading-div {
+    text-align: center;
+}
+.center {
     text-align: center;
 }
