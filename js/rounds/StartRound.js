@@ -36,8 +36,8 @@ StartRound.prototype.setContentText = function() {
 
     for (var a = 1; a <= this._controller.getNumberOfPlayers(); a++) {
         var player = JSON.parse(this._controller.sharedState()['player' + a]);
-        console.log("Player: ", player);
-        output += '<li>' + player.name + '</li>';
+        console.log("player: ", player);
+        output += '<li>#' + a + ': ' + player.name + (this._controller.playerNum == a ? ' (you)' : '') + '</li>';
     }
 
     this._controller.display.setContentText(output);

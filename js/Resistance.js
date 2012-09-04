@@ -52,7 +52,7 @@ Resistance.prototype.sharedState = function() {
 }
 
 Resistance.prototype.sendSharedStateToClient = function(client) {
-    sendMessageToClient(client, 'iss|' + JSON.stringify(this.sharedState()));
+    sendMessageToWindow(client, 'iss|' + JSON.stringify(this.sharedState()));
 }
 
 Resistance.prototype.loadRound = function(round) {
@@ -62,6 +62,7 @@ Resistance.prototype.loadRound = function(round) {
 }
 
 Resistance.prototype.update = function(round) {
+
     if (this._round) {
         this._round.update();
     }
@@ -77,23 +78,19 @@ Resistance.prototype.updateSharedStateFromParent = function() {
         return false;
     }
 
-    this.communicator.sendMessage('gss|');
+    sendMessageToParent('gss|');
 }
 
 /**
  * Adds the user of the app to the player list, and broadcasts it to other clients
  */
 Resistance.prototype.addSelfAsPlayer = function() {
-    var name = new NameGenerator().genName();
-    var id = genID();
-    var player = new Player(name, id);
-    setTimeout(function() {
-        var newPlayerNum = this.getNewPlayerNum();
-        this.playerNum = newPlayerNum;
-        var msg = {};
-        msg['player' + newPlayerNum] = JSON.stringify(player);
-        this.msg(msg);
-    }.bind(this), 2000);
+    var player = new Player(new NameGenerator().genName(), genID());
+    var newPlayerNum = this.getNewPlayerNum();
+    this.playerNum = newPlayerNum;
+    var msg = {};
+    msg['player' + newPlayerNum] = JSON.stringify(player);
+    this.msg(msg);
 }
 
 /**
@@ -111,7 +108,7 @@ Resistance.prototype.getNewPlayerNum = function() {
  */
 Resistance.prototype.openAnotherClient = function() {
     if (this.isChild()) {
-        this.communicator.sendMessage('oc|');
+        sendMessageToParent('oc|');
     } else {
         this.windows.push(
             window.open(location.protocol + '//' + document.domain)
@@ -125,13 +122,17 @@ Resistance.prototype.isChild = function() {
 }
 
 /**
- * Actually modifies the shared state
+ * Actually changes the shared state, and calls onSharedStateChange
+ * *** The VALUES included in updates should already be strings
+ * @param  {object} updates The updates.
  */
 Resistance.prototype.changeSharedState = function(updates) {
+    console.log("Shared state before", this.sharedState());
     for (var index in updates) {
         this.sharedState()[index] = updates[index];
     }
     this.onSharedStateChange(updates);
+    console.log("Shared state after", this.sharedState());
 }
 
 /**
@@ -161,7 +162,7 @@ Resistance.prototype.msg = function(updates) {
  * Starts up the app
  */
 window.onload = function() {
-    // Using window.resistance makes it accessible from the command line!
+    // Using window.resistance makes it accessible from the JS console!
     window.resistance = new Resistance();
 }
 

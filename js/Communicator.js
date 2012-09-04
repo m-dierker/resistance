@@ -14,7 +14,7 @@ function Communicator(controller) {
  * @param  {string} msg the other stuff (probably JSON) included after the |
  */
 Communicator.prototype.handleCommand = function(cmd, msg, src) {
-    console.log("Command Received: '" + cmd + "'");
+    console.log("Command Received: '" + cmd + "' from " + (src == window ? 'me' : 'another window'));
     console.log("Message Received: '" + msg + "'");
 
     switch (cmd) {
@@ -74,11 +74,10 @@ Communicator.prototype.handleIncomingMessage = function(e) {
  */
 Communicator.prototype.sendMessage = function(msg) {
     if (this._controller.isChild()) {
-        sendMessageToClient(this._controller.parentWindow, 'msg|' + msg);
+        sendMessageToWindow(this._controller.parentWindow, 'msg|' + msg);
     } else {
         for (var a = 0; a < this._controller.windows.length; a++) {
-            console.log("Messaging ", this._controller.windows[a]);
-            sendMessageToClient(this._controller.windows[a], msg);
+            sendMessageToWindow(this._controller.windows[a], msg);
        }
     }
 }
@@ -88,6 +87,10 @@ Communicator.prototype.sendMessage = function(msg) {
  * @param  {window} client The client
  * @param  {string} msg    the message
  */
-function sendMessageToClient(client, msg) {
+function sendMessageToWindow(client, msg) {
     return client.postMessage(msg, location.protocol + '//' + document.domain);
+}
+
+function sendMessageToParent(msg) {
+    return sendMessageToWindow(window.opener, msg);
 }
