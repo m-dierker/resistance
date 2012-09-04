@@ -31,11 +31,12 @@ StartRound.prototype.render = function() {
 
 StartRound.prototype.setContentText = function() {
 
-    var output = 
+    var output =
         '5 minimum players needed... <img src="img/ajax-loader.gif"> <hr> <h4 class="center">Players (' + this._controller.getNumberOfPlayers() + ')</h4> <ul>';
 
-    for (var a = 0; a < this._controller.players.length; a++) {
-        var player = this._controller.players[a];
+    for (var a = 1; a <= this._controller.getNumberOfPlayers(); a++) {
+        var player = JSON.parse(this._controller.sharedState()['player' + a]);
+        console.log("Player: ", player);
         output += '<li>' + player.name + '</li>';
     }
 

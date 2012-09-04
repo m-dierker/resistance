@@ -1,25 +1,58 @@
 function Resistance() {
     // Controller Initialization
     this.display = new Display($('#container'));
-    this._communicator = new Communicator(this);
-    this.windows = new Array();
-    this.playerNum = -1;
-    this.sharedState = {};
+    this.communicator = new Communicator(this);
 
-    $('#open-another-client').click(function() {
+    // Window List
+    if (this.isChild()) {
+        this.parentWindow = window.opener;
+    } else {
+        this.windows = new Array();
+        this.windows.push(window);
+    }
+
+    // Game setup
+    this.playerNum = -1;
+    this._sharedState = {
+        numPlayers: 0
+    };
+
+    // Dev Tools
+    $('#dev-tools #open-another-client').click(function() {
         this.openAnotherClient();
     }.bind(this));
 
-    // Round Initialization
+    this.updateSharedStateFromParent();
+}
+
+/**
+ * The rest of the setup after the shared state has been setup
+ */
+Resistance.prototype.setup = function() {
+     // Round Initialization
     this._startRound = new StartRound(this);
     this.loadRound(this._startRound);
-
 
     // Game setup
     this.addSelfAsPlayer();
 
     // Re-update the game
     this.update();
+
+    console.log("Resistance setup complete");
+}
+
+/**
+ * Returns the shared state (so this can easily be overriden for G+)
+ * ***** NOTHING should use this._sharedState directly *******
+ * @return {object} the shared state
+ */
+Resistance.prototype.sharedState = function() {
+    return this._sharedState;
+}
+
+Resistance.prototype.sendSharedStateToClient = function(client) {
+    sendMessageToClient(client, 'iss|' + JSON.stringify(this.sharedState()));
 }
 
 Resistance.prototype.loadRound = function(round) {
@@ -29,24 +62,22 @@ Resistance.prototype.loadRound = function(round) {
 }
 
 Resistance.prototype.update = function(round) {
-    this._round.update();
-}
-
-Resistance.prototype.setLoading = function(loading) {
-    if (loading) {
-        $('#loading-div').show();
-    } else {
-        $('#loading-div').fadeOut();
+    if (this._round) {
+        this._round.update();
     }
 }
 
 Resistance.prototype.getNumberOfPlayers = function() {
-    return this.players.length;
+    return this.sharedState()['numPlayers'];
 }
 
-Resistance.prototype.addPlayer = function(player) {
-    this.players.push(player);
-    this.update();
+Resistance.prototype.updateSharedStateFromParent = function() {
+    if (!this.isChild()) {
+        this.setup();
+        return false;
+    }
+
+    this.communicator.sendMessage('gss|');
 }
 
 /**
@@ -59,30 +90,38 @@ Resistance.prototype.addSelfAsPlayer = function() {
     setTimeout(function() {
         var newPlayerNum = this.getNewPlayerNum();
         this.playerNum = newPlayerNum;
-        this.msg({'player' + newPlayerNum : JSON.stringify(player)});
-    }.bind(this), 5000);
+        var msg = {};
+        msg['player' + newPlayerNum] = JSON.stringify(player);
+        this.msg(msg);
+    }.bind(this), 2000);
 }
 
-Resistance.prototype.getNewPlayerNum() = function() {
-    var a = 1;
-    var found = false;
-    while (!found && a <= 1000) {
-        if (("player" + a) in this.sharedState) {
-            found = true;
-        } else {
-            a++;
-        }
-    }
-    return a;
+/**
+ * Returns the next player number (so if there are 5 players, it will return 6)
+ * @return {int} The next player number
+ */
+Resistance.prototype.getNewPlayerNum = function() {
+    var num = this.sharedState()['numPlayers'] + 1;
+    this.msg({numPlayers : num});
+    return num;
 }
 
 /**
  * Used in dev tools, opens another window
  */
 Resistance.prototype.openAnotherClient = function() {
-    this.windows.push(
-        window.open(location.protocol + '//' + document.domain)
-    );
+    if (this.isChild()) {
+        this.communicator.sendMessage('oc|');
+    } else {
+        this.windows.push(
+            window.open(location.protocol + '//' + document.domain)
+        );
+    }
+
+}
+
+Resistance.prototype.isChild = function() {
+    return (window.opener ? true : false);
 }
 
 /**
@@ -90,12 +129,16 @@ Resistance.prototype.openAnotherClient = function() {
  */
 Resistance.prototype.changeSharedState = function(updates) {
     for (var index in updates) {
-        this.sharedState[index] = updates[index];
+        this.sharedState()[index] = updates[index];
     }
-    this.sharedStateChanged(updates);
+    this.onSharedStateChange(updates);
 }
 
-Resistance.prototype.sharedStateChanged = function(updates) {
+/**
+ * Listener for when the shared state changes
+ * @param  {object} updates The object that was updated
+ */
+Resistance.prototype.onSharedStateChange = function(updates) {
     for (var index in updates) {
         if (index.indexOf('player') == 0) {
             this.update();
@@ -103,32 +146,26 @@ Resistance.prototype.sharedStateChanged = function(updates) {
     }
 }
 
+/**
+ * Sends a message to update the shared state with the given changes
+ * @param  {object} updates The updates to make
+ */
 Resistance.prototype.msg = function(updates) {
-    this._communicator.sendMessage('uss|' + JSON.stringify(updates));
+    this.communicator.sendMessage('uss|' + JSON.stringify(updates));
 };
+
+
+// ========= Starting Functions =========
 
 /**
  * Starts up the app
  */
 window.onload = function() {
-    var resistance = new Resistance();
+    // Using window.resistance makes it accessible from the command line!
+    window.resistance = new Resistance();
 }
 
 // ========= Global Functions =========
-
-function changeTextWithSlide(container, text) {
-    $(container).slideUp();
-    setTimeout(function() {
-        $(container).html(text).slideDown();
-    }, 400);
-}
-
-function changeTextWithFade(container, text) {
-    $(container).fadeOut();
-    setTimeout(function() {
-        $(container).html(text).fadeIn();
-    }, 400);
-}
 
 /**
  * Generates a unique string ID (it's possible for them to collide, but very
