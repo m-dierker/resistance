@@ -127,6 +127,11 @@ Resistance.prototype.isChild = function() {
  * @param  {object} updates The updates.
  */
 Resistance.prototype.changeSharedState = function(updates) {
+
+/*
+    The problem right now is centered around the fact that when something is updated, it may not be updated correctly with strings vs. objects, and something isn't transferring correctly even though the commands are going through correctly
+ */
+
     console.log("Shared state before", this.sharedState());
     for (var index in updates) {
         this.sharedState()[index] = updates[index];
