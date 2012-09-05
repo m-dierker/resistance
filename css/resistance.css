@@ -1,9 +1,9 @@
 #container {
-    width: 300px; 
-    max-width: 300px; 
-    min-width: 300px; 
-    min-height: 500px; 
-    border-width: 1px; 
+    width: 300px;
+    max-width: 300px;
+    min-width: 300px;
+    min-height: 500px;
+    border-width: 1px;
     border-style: solid;
     padding: 3px;
     float:left;
@@ -26,4 +26,13 @@
 }
 .center {
     text-align: center;
+}
+
+/* Start Round */
+.start-round-button {
+    margin-top: 10px;
+}
+#start-round .player-ready {
+    color: #080;
+    font-weight: bold;
 }

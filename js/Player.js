@@ -1,5 +1,6 @@
 function Player(name, id) {
 
+    // General
     this.name = name;
     this.id = id;
 
@@ -16,4 +17,7 @@ function Player(name, id) {
     this.round3MissionVote = -1;
     this.round4MissionVote = -1;
     this.round5MissionVote = -1;
+
+    // Ready to start
+    this.readyToStartGame = 0;
 }

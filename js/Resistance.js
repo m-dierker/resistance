@@ -30,8 +30,8 @@ function Resistance() {
  */
 Resistance.prototype.setup = function() {
      // Round Initialization
-    this._startRound = new StartRound(this);
-    this.loadRound(this._startRound);
+    this.startRound = new StartRound(this);
+    this.loadRound(this.startRound);
 
     // Game setup
     this.addSelfAsPlayer();
@@ -154,10 +154,24 @@ Resistance.prototype.onSharedStateChange = function(updates) {
 
 /**
  * Sends a message to update the shared state with the given changes
+ * Note that if you try to send an object, it will be stringified automatically. Everything read on the other end will be a string, even if you send it as an object (since an object can't be sent)
  * @param  {object} updates The updates to make
  */
 Resistance.prototype.msg = function(updates) {
+    console.log("Calling msg");
+    for (var index in updates) {
+        console.log("Checking type of " + index);
+        if (typeof updates[index] == 'object') {
+            console.log("Changing type of " + index);
+            updates[index] = JSON.stringify(updates[index]);
+        }
+    }
+    console.log("Sending the message");
+    var u = JSON.stringify(updates);
+    //start from here
+    // if(!u.indexOf('\"readyToStartGame\":0'))
     this.communicator.sendMessage('uss|' + JSON.stringify(updates));
+    console.log("Done sending the message");
 };
 
 
