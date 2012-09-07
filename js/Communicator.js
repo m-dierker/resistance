@@ -57,8 +57,7 @@ Communicator.prototype.handleIncomingMessage = function(e) {
                 e.data.substring(separator_index+1));
             this.handleCommand(cmd, msg, e.source);
         } else {
-            console.log("Invalid message format received from self: "
-                + e.data);
+            console.log("Invalid message format received from self: " + e.data);
         }
     } else {
         console.log("Invalid Message Received from " + e.origin);

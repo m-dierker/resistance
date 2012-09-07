@@ -998,6 +998,10 @@ function NameGenerator() {
     this._names.push('Sadie');
     this._names.push('Amos');
     this._names.push('Norman');
+    this._names.push('Matthew Dierker');
+    this._names.push('Aleks with a k');
+    this._names.push('Rob');
+    this._names.push("Anna");
 }
 
 NameGenerator.prototype.genName = function() {

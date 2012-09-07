@@ -57,23 +57,18 @@ StartRound.prototype.render = function() {
 
 StartRound.prototype.setContentText = function() {
 
-    var output =
-        '<div id="start-round">5 minimum players needed... <img src="img/ajax-loader.gif"> <hr> <h4 class="center">Players (' + this._controller.getNumberOfPlayers() + ')</h4> <ul>';
+    var output = '<ul>';
 
+
+    $('#start-round-player-count').html(this._controller.getNumberOfPlayers());
     for (var a = 1; a <= this._controller.getNumberOfPlayers(); a++) {
         var player = JSON.parse(this._controller.sharedState()['player' + a]);
-        console.log('Player: ', player);
         output += '<li class="player ' + (player.readyToStartGame == 1 ? 'player-ready' : 'player-notready') + '">#' + a + ': ' + player.name + (this._controller.playerNum == a ? ' (you)' : '') + '</li>';
     }
 
-    if (this.canStartRound()) {
-        console.log("Adding the button");
-        output += "<div class='start-round-button'><a href='#' id='start-round-ready' class='btn btn-primary'>Start Round</a></div>";
-    }
+    output += '</ul>';
 
-    output += '</div>';
-
-    this._controller.display.setContentText(output);
+    $('#start-round-players').html(output);
 }
 
 /**
@@ -81,26 +76,19 @@ StartRound.prototype.setContentText = function() {
  * Ex: Sets up the button listener for the "Start Button" round
  */
 StartRound.prototype.setupStartRound = function() {
-    console.log("Setting up round start");
     if (!this._hasSetupStartRound) {
         this._hasSetupStartRound = true;
-        console.log("Adding the listener", this);
-        console.log("Button: ", $('#start-round-ready'));
+
         $('#start-round-ready').click(function() {
-            console.log("Button clicked", this);
             this.readyToStart();
-            console.log("Done calling readyToStart");
         }.bind(this));
-        console.log("Button setup");
     }
-    console.log("Done setting up round start");
 }
 
 /**
  * Indicates that the user is ready to start
  */
 StartRound.prototype.readyToStart = function() {
-    console.log("Ready to start");
     var player = JSON.parse(this._controller.sharedState()['player' + this._controller.playerNum]);
 
     player['readyToStartGame'] = 1;
@@ -108,7 +96,6 @@ StartRound.prototype.readyToStart = function() {
     var msg = {};
     msg['player' + this._controller.playerNum] = player;
     this._controller.msg(msg);
-    console.log("Done being ready to start");
 }
 
 /**
@@ -124,14 +111,11 @@ StartRound.prototype.canStartRound = function() {
  * @return {boolean} whether to transition the round
  */
 StartRound.prototype.shouldTransitionRound = function() {
-    console.log("Checking if the round should be transitioned");
     for (var a = 1; a <= this._controller.getNumberOfPlayers(); a++) {
         var player = JSON.parse(this._controller.sharedState()['player' + a]);
         if (!player.readyToStartGame) {
-            console.log("The round should not be transitioned");
             return false;
         }
     }
-    console.log("Should transition the round");
     return true;
 }

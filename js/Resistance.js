@@ -127,17 +127,10 @@ Resistance.prototype.isChild = function() {
  * @param  {object} updates The updates.
  */
 Resistance.prototype.changeSharedState = function(updates) {
-
-/*
-    The problem right now is centered around the fact that when something is updated, it may not be updated correctly with strings vs. objects, and something isn't transferring correctly even though the commands are going through correctly
- */
-
-    console.log("Shared state before", this.sharedState());
     for (var index in updates) {
         this.sharedState()[index] = updates[index];
     }
     this.onSharedStateChange(updates);
-    console.log("Shared state after", this.sharedState());
 }
 
 /**
@@ -146,6 +139,7 @@ Resistance.prototype.changeSharedState = function(updates) {
  */
 Resistance.prototype.onSharedStateChange = function(updates) {
     for (var index in updates) {
+        // Update the game if there's been a change to the player
         if (index.indexOf('player') == 0) {
             this.update();
         }
@@ -158,20 +152,13 @@ Resistance.prototype.onSharedStateChange = function(updates) {
  * @param  {object} updates The updates to make
  */
 Resistance.prototype.msg = function(updates) {
-    console.log("Calling msg");
     for (var index in updates) {
-        console.log("Checking type of " + index);
         if (typeof updates[index] == 'object') {
-            console.log("Changing type of " + index);
             updates[index] = JSON.stringify(updates[index]);
         }
     }
-    console.log("Sending the message");
     var u = JSON.stringify(updates);
-    //start from here
-    // if(!u.indexOf('\"readyToStartGame\":0'))
     this.communicator.sendMessage('uss|' + JSON.stringify(updates));
-    console.log("Done sending the message");
 };
 
 

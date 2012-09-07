@@ -11,7 +11,7 @@ Display.prototype.setRoundInstructions = function(inst) {
 }
 
 Display.prototype.setContentText = function(text) {
-    this.changeTextWithFade('#round-text', text);
+    $('#round-text').html(text);
 }
 
 Display.prototype.setLoading = function(loading) {
