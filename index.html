@@ -3,6 +3,7 @@
     <title>Resistance for G+</title>
     <!-- Bootstrap -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/jquery-ui/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet">
     <link href="/css/resistance.css" rel="stylesheet">
   </head>
   <body>
@@ -18,17 +19,52 @@
         <hr>
 
         <div id="round-content">
-            <div id="loading-div" class="hide">
+            <div id="loading-div">
                 Loading... <img src="img/ajax-loader.gif">
             </div>
-            <div id="start-round">
+            <div id="start-round" class="hide">
                 5 minimum players needed... <img src="img/ajax-loader.gif">
                 <hr>
                 <h4 class="center">Players (<span id="start-round-player-count">0</span>)</h4>
                 <div id="start-round-players">
                 </div>
                  <div class='start-round-button'>
-                    <a href='#' id='start-round-ready' class='btn btn-primary'>Start Round</a>
+                    <a href='#' id='start-round-ready' class='btn btn-primary hide'>Start Round</a>
+                </div>
+            </div>
+            <div id="game-round" style="display:none">
+                <div id="game-round-players">
+
+                </div>
+                <div id="game-round-identity">
+                    <div id="game-round-identity-resistance" class="hide">
+                        <h4>You are <span class="resistance">RESISTANCE</span>.</h4>
+                    </div>
+                    <div id="game-round-identity-spy" class="hide">
+                        <h4>You are a <span class="spy">SPY</span>.</h4>
+                    </div>
+                </div>
+                <div id="game-round-mission-list">
+                    <div class="missionListHeader">
+                        On The Mission
+                    </div>
+                    <ul id="game-round-mission-on" class="missionList">
+                    </ul>
+                    <div class="missionListHeader">
+                        Not on the Mission
+                    </div>
+                    <ul id="game-round-mission-noton" class="missionList">
+                        <li id="mission-player1" class="player">Player 1</li>
+                        <li id="mission-player2" class="player">Player 2</li>
+                        <li id="mission-player3" class="player">Player 3</li>
+                        <li id="mission-player4" class="player">Player 4</li>
+                        <li id="mission-player5" class="player">Player 5</li>
+                        <li id="mission-player6" class="player">Player 6</li>
+                        <li id="mission-player7" class="player">Player 7</li>
+                        <li id="mission-player8" class="player">Player 8</li>
+                        <li id="mission-player9" class="player">Player 9</li>
+                        <li id="mission-player10" class="player">Player 10</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -41,7 +77,8 @@
         </a>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+    <script src="js/jquery-ui/jquery-ui-1.8.23.custom.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="js/Resistance.js"></script>
     <script src="js/Display.js"></script>
@@ -49,5 +86,6 @@
     <script src="js/Player.js"></script>
     <script src="js/namegen/NameGenerator.js"></script>
     <script src="js/rounds/StartRound.js"></script>
+    <script src="js/rounds/GameRound.js"></script>
   </body>
 </html>

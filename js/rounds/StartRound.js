@@ -13,6 +13,12 @@ function StartRound(controller) {
 StartRound.prototype.startRound = function() {
     this.setRoundTitle();
     this.setRoundInstructions();
+    $('#loading-div').hide();
+    $('#start-round').fadeIn();
+}
+
+StartRound.prototype.endRound = function() {
+    $('#start-round').hide();
 }
 
 /**
@@ -38,13 +44,13 @@ StartRound.prototype.update = function() {
     this.render();
 
     if (this.canStartRound()) {
-        setTimeout(this.setupStartRound.bind(this), 450);
+        this.setupStartRound();
     }
 
     if (this.shouldTransitionRound()) {
-        // this._controller.gameRound = new GameRound(this._controller);
-        // this._controller.loadRound(this._controller.gameRound);
         console.log("Transitioning Round");
+        this._controller.gameRound = new GameRound(this._controller);
+        this._controller.loadRound(this._controller.gameRound);
     }
 }
 
@@ -81,7 +87,7 @@ StartRound.prototype.setupStartRound = function() {
 
         $('#start-round-ready').click(function() {
             this.readyToStart();
-        }.bind(this));
+        }.bind(this)).fadeIn();
     }
 }
 
@@ -117,5 +123,6 @@ StartRound.prototype.shouldTransitionRound = function() {
             return false;
         }
     }
+    // return this._controller.getNumberOfPlayers() >= 1;
     return true;
 }

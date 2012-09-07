@@ -36,8 +36,8 @@ Resistance.prototype.setup = function() {
     // Game setup
     this.addSelfAsPlayer();
 
-    // Re-update the game
-    this.update();
+    // Re-update the game, after waiting to ensure that this player gets through
+    setTimeout(this.update.bind(this), 200);
 
     console.log("Resistance setup complete");
 }
@@ -56,9 +56,12 @@ Resistance.prototype.sendSharedStateToClient = function(client) {
 }
 
 Resistance.prototype.loadRound = function(round) {
+    if (this._round) {
+        this._round.endRound();
+    }
+
     this._round = round;
     round.startRound();
-    this.update();
 }
 
 Resistance.prototype.update = function(round) {
@@ -73,6 +76,7 @@ Resistance.prototype.getNumberOfPlayers = function() {
 }
 
 Resistance.prototype.updateSharedStateFromParent = function() {
+    console.log("Updating the shared state from the parent");
     if (!this.isChild()) {
         this.setup();
         return false;
@@ -161,6 +165,58 @@ Resistance.prototype.msg = function(updates) {
     this.communicator.sendMessage('uss|' + JSON.stringify(updates));
 };
 
+/**
+ * Returns the game info for the game, such as how many spies, and how many
+ * resistance and how many spies. This will (eventually) also return card info.
+ * @return {object} Game info
+ */
+Resistance.prototype.getGameInfo = function() {
+    var size = this.getNumberOfPlayers();
+    var info = {};
+
+    switch(size) {
+        // The actual game won't start below 5, but I'm debugging with less
+        case 2:
+            info['spies'] = 1;
+            info['resistance'] = 1;
+            break;
+        case 3:
+            info['spies'] = 1;
+            info['resistance'] = 2;
+            break;
+        case 4:
+            info['spies'] = 2;
+            info['resistance'] = 2;
+            break;
+        // Start actual cases
+        case 5:
+            info['spies'] = 2;
+            info['resistance'] = 3;
+            break;
+        case 6:
+            info['spies'] = 2;
+            info['resistance'] = 4;
+            break;
+        case 7:
+            info['spies'] = 3;
+            info['resistance'] = 4;
+            break;
+        case 8:
+            info['spies'] = 3;
+            info['resistance'] = 5;
+            break;
+        case 9:
+            info['spies'] = 3;
+            info['resistance'] = 6;
+            break;
+        case 10:
+            info['spies'] = 4;
+            info['resistance'] = 6;
+            break;
+    }
+
+    return info;
+}
 
 // ========= Starting Functions =========
 
@@ -185,3 +241,9 @@ function genID() {
     };
     return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 }
+
+
+// Constants
+var TEAM_NOT_SET = -1;
+var TEAM_RESISTANCE = 0;
+var TEAM_SPY = 1;

@@ -27,6 +27,12 @@
 .center {
     text-align: center;
 }
+.resistance {
+    color:#22bbff;
+}
+.spy {
+    color: red;
+}
 
 /* Start Round */
 .start-round-button {
@@ -35,4 +41,33 @@
 #start-round .player-ready {
     color: #080;
     font-weight: bold;
+}
+
+/* Game Round */
+#game-round-identity div {
+    text-align: center;
+}
+
+#game-round .missionListHeader {
+    text-align: center;
+    font-size: 150%;
+    font-weight:bold;
+    text-decoration: underline;
+    margin-top: 15px;
+}
+
+#game-round .missionList {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+#game-round .missionList .player {
+    border: 1px solid #CCC;
+    background: #F6F6F6 url(images/ui-bg_glass_100_f6f6f6_1x400.png) 50% 50% repeat-x;
+    color: #B818C8;
+    font-weight: bold;
+    list-style-type: none;
+    margin: 5px 50px;
+    padding: 2px 50px;
 }

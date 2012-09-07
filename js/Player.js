@@ -3,6 +3,8 @@ function Player(name, id) {
     // General
     this.name = name;
     this.id = id;
+    this.team = TEAM_NOT_SET;
+    this.leader = 0;
 
     // Round Votes
     this.round1GoVote = -1;
@@ -20,4 +22,12 @@ function Player(name, id) {
 
     // Ready to start
     this.readyToStartGame = 0;
+}
+
+Player.isSpy = function(player) {
+    return player.team == TEAM_SPY;
+}
+
+Player.isResistance = function(player) {
+    return player.team == TEAM_RESISTANCE;
 }
